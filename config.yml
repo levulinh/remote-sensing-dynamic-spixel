@@ -1,0 +1,52 @@
+# GPUS and distributed training setting
+gpus: "0"
+distributed: False
+workers: 8
+
+# logging
+wandb: True
+project_name: GNN_UCM_SMALL
+log_interval: 1
+val_check_interval: 0.5 # run validation twice per epoch
+checkpoint: ./gnn_vgg16_sweep3
+version: 0.3
+
+dataset_dir: ./datasets
+dataset: UCM # AID, NWPU, PNET, UCM
+seed: 204
+use_transform: True
+
+val_sets: ["UCM"] # run test on same dataset, you can add more than one dataset
+label_txt: multilabels_ucm.txt # FUll path
+sep: '\t' # \t for ucm and , for aid
+
+learning_rate: !!float 0.00558299341867288
+batch_size: 6
+max_epochs: 5
+
+num_classes: 17
+model_name: vgg16 # timm create model: resnet18, vgg16
+pretrained: True
+model_dir: "/home/ncl/vlle/linh/vgg16/UCM-epoch=0-valid_precision=0.82.ckpt"
+resume: False
+
+optimizer: Adam # Adam, AdamW, RMSProp, SGD
+weight_decay: !!float 0.001224
+# for adam and adamw
+eps_adam: !!float 8.754998814243796e-09
+beta_1: 1.2796215531141415
+beta_2: 1.7592944817151515
+# for rmsprop
+eps_rms: !!float 1e-8
+alpha: 1.642206205135265
+
+loss_function: BCE # MSE, NL, CE, HE, KL, BCE
+augmentation: True # apply simple augmentation to dataset (horizontol flip, color jitter)
+
+# test
+run_test: True
+
+# Dynamic model config
+topk: 12
+aggr: 'max' #'max', 'mean'
+cat: False
