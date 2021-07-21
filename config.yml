@@ -8,19 +8,19 @@ wandb: True
 project_name: GNN_UCM_SMALL
 log_interval: 1
 val_check_interval: 0.5 # run validation twice per epoch
-checkpoint: ./gnn_vgg16_sweep3
-version: 0.3
+checkpoint: ./gnn_aug_max_pos_sweep
+version: 0.4
 
 dataset_dir: ./datasets
 dataset: UCM # AID, NWPU, PNET, UCM
-seed: 204
+seed: 420
 use_transform: True
 
 val_sets: ["UCM"] # run test on same dataset, you can add more than one dataset
 label_txt: multilabels_ucm.txt # FUll path
 sep: '\t' # \t for ucm and , for aid
 
-learning_rate: !!float 0.00558299341867288
+learning_rate: !!float 0.005583
 batch_size: 6
 max_epochs: 5
 
@@ -33,20 +33,22 @@ resume: False
 optimizer: Adam # Adam, AdamW, RMSProp, SGD
 weight_decay: !!float 0.001224
 # for adam and adamw
-eps_adam: !!float 8.754998814243796e-09
-beta_1: 1.2796215531141415
-beta_2: 1.7592944817151515
+eps_adam: !!float 8.755e-9
+beta_1: 1.28
+beta_2: 1.759
 # for rmsprop
 eps_rms: !!float 1e-8
-alpha: 1.642206205135265
+alpha: 1.642
 
 loss_function: BCE # MSE, NL, CE, HE, KL, BCE
 augmentation: True # apply simple augmentation to dataset (horizontol flip, color jitter)
 
 # test
-run_test: True
+run_test: False
 
 # Dynamic model config
-topk: 12
+topk: 21
+num_seg: 91
 aggr: 'max' #'max', 'mean'
 cat: False
+with_pos: True

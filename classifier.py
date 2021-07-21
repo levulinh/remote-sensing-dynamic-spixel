@@ -6,6 +6,7 @@ from torch_geometric.data import Batch
 from models.custom.model import DynamicModel
 from utils.loss_functions import Criterion
 from torchmetrics import MetricCollection, Recall, Precision, F1, FBeta
+from sklearn.metrics import precision_score
 from gnn_model_util import FeatureMapExtractor
 from models.custom.model import CustomModel
 from torch.nn import Upsample
@@ -30,7 +31,6 @@ class SpixelModel(pl.LightningModule):
         self.criterion = getattr(Criterion, args.loss_function)
 
         pretrained_cnn = CustomModel(args)
-        # pretrained_cnn_state_dict = torch.load(args.model_dir, map_location=torch.device('cpu'))["state_dict"]
         print('Loading pretrained cnn model...')
         pretrained_cnn_state_dict = torch.load(args.model_dir)["state_dict"]
         pretrained_cnn.load_state_dict(pretrained_cnn_state_dict, strict=False)
@@ -46,31 +46,35 @@ class SpixelModel(pl.LightningModule):
             "precision": Precision(
                 compute_on_step=False,
                 dist_sync_on_step=True,
-                num_classes=2, # one-hot
                 multiclass=True,
-                mdmc_average='global'
+                num_classes=2,
+                mdmc_average='samplewise',
+                average='macro'
             ),
             "recall": Recall(
                 compute_on_step=False,
                 dist_sync_on_step=True,
-                num_classes=2, # one-hot
                 multiclass=True,
-                mdmc_average='samplewise'
+                num_classes=2,
+                mdmc_average='samplewise',
+                average='macro'
             ),
             "F1": F1(
                 compute_on_step=False,
                 dist_sync_on_step=True,
-                num_classes=2, # one-hot
                 multiclass=True,
-                mdmc_average='samplewise'
+                num_classes=2,
+                mdmc_average='samplewise',
+                average='macro'
             ),
             "F2": FBeta(
                 beta=2.0,
                 compute_on_step=False,
                 dist_sync_on_step=True,
-                num_classes=2, # one-hot
+                num_classes=2,
                 multiclass=True,
-                mdmc_average='samplewise'
+                mdmc_average='samplewise',
+                average='macro'
             )
 
         }
@@ -220,6 +224,7 @@ class SpixelDataModule(pl.LightningDataModule):
             image_format=img_format,
             datapath=train_datapath,
             labels_txt=args.label_txt,
+            n_segments=args.num_seg,
         )
 
         self.val_dataset = SpixelDataset(
@@ -228,6 +233,7 @@ class SpixelDataModule(pl.LightningDataModule):
             image_format=img_format,
             datapath=val_datapath,
             labels_txt=args.label_txt,
+            n_segments=args.num_seg,
         )
 
     def train_dataloader(self):

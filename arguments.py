@@ -51,7 +51,9 @@ class Args:
 
     cat: bool = field(default=False)
     topk: int = field(default=20)
+    num_seg: int = field(default=100)
     aggr: str = field(default='max')
+    with_pos: bool = field(default=True)
 
     configuration: InitVar[Dict] = field(default=dict())
 

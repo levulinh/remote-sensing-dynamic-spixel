@@ -162,7 +162,7 @@ class IDXModel(pl.LightningModule):
             sync_dist=True,
             logger=True,
         )
-        self.train_metrics(logits.softmax(-1), labels)
+        self.train_metrics(logits.sigmoid(), labels)
         return losses
 
     def training_epoch_end(self, outputs) -> None:
@@ -183,7 +183,7 @@ class IDXModel(pl.LightningModule):
             logger=True,
             add_dataloader_idx=True,
         )
-        self.valid_metrics(logits.softmax(-1), labels)
+        self.valid_metrics(logits.sigmoid(), labels)
 
     def validation_epoch_end(self, outputs) -> None:
         scores = self.valid_metrics.compute()
@@ -195,7 +195,7 @@ class IDXModel(pl.LightningModule):
     def test_step(self, batch, batch_idx) -> None:
         inputs, labels = batch
         logits = self(inputs)
-        self.test_metrics(logits.softmax(-1), labels)
+        self.test_metrics(logits.sigmoid(), labels)
 
     def on_test_batch_end(self, outputs, batch, batch_idx, dataloader_idx) -> None:
         scores = self.test_metrics.compute()
