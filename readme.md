@@ -1,4 +1,4 @@
-# CNN Training
+# GNN Training
 
 ## Environment Setup
 1. To train the network, edit ```config.yml``` and run ```python train_gnn.py```.
